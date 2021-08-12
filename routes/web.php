@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostCommentsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SessionController;
@@ -23,6 +24,17 @@ Route::get('/', [PostController::class, 'index'])->name('home');
 Route::get('posts/{post:slug}', [PostController::class, 'show']);
 Route::post('posts/{post:slug}/comments', [PostCommentsController::class, 'store'])->middleware('auth');
 
+// Login
+Route::get('/login', [SessionController::class, 'create'])->middleware('guest');
+Route::post('/login', [SessionController::class, 'store'])->middleware('guest');
+
+//Register
+Route::get('/register', [AuthenticationController::class, 'create'])->middleware('guest');
+Route::post('/register', [AuthenticationController::class, 'store'])->middleware('guest');
+
+// Logout
+Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth');
+
 Route::get('categories/{category:slug}', function (Category $category) {
     return view('posts', [
         'posts' => $category->posts,
@@ -35,13 +47,4 @@ Route::get('authors/{author:username}', function (User $author) {
     ]);
 });
 
-// Login
-Route::get('/login', [SessionController::class, 'create'])->middleware('guest');
-Route::post('/login', [SessionController::class, 'store'])->middleware('guest');
-
-//Register
-Route::get('/register', [AuthenticationController::class, 'create'])->middleware('guest');
-Route::post('/register', [AuthenticationController::class, 'store'])->middleware('guest');
-
-// Logout
-Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth');
+Route::post('/newsletter', NewsletterController::class);
